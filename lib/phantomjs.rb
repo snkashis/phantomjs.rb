@@ -37,11 +37,11 @@ class Phantomjs
   def execute(path, arguments, block)
     begin
       if block
-        IO.popen([exec, path, arguments].flatten).each_line do |line|
+        IO.popen([exec, '--ssl-protocol=any', path, arguments].flatten).each_line do |line|
           block.call(line)
         end
       else
-        IO.popen([exec, path, arguments].flatten).read
+        IO.popen([exec, '--ssl-protocol=any', path, arguments].flatten).read
       end
     rescue Errno::ENOENT
       raise CommandNotFoundError.new('Phantomjs is not installed')
