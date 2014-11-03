@@ -13,8 +13,7 @@ class Phantomjs
     epath = File.expand_path(path)
     raise NoSuchPathError.new(epath) unless File.exist?(epath)
     block = block_given? ? Proc.new : nil
-    epath = "#{opts.join(' ')} #{epath}"
-    execute(epath, args, block)
+    execute(opts,epath, args, block)
   end
 
   def self.inline(script, *args, &block)
@@ -35,14 +34,15 @@ class Phantomjs
 
   private
 
-  def execute(path, arguments, block)
+  def execute(opts, path, arguments, block)
+    puts [exec, opts, path, arguments].flatten
     begin
       if block
-        IO.popen([exec, path, arguments].flatten).each_line do |line|
+        IO.popen([exec, opts, path, arguments].flatten).each_line do |line|
           block.call(line)
         end
       else
-        IO.popen([exec, path, arguments].flatten).read
+        IO.popen([exec, opts, path, arguments].flatten).read
       end
     rescue Errno::ENOENT
       raise CommandNotFoundError.new('Phantomjs is not installed')
