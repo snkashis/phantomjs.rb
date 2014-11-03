@@ -9,10 +9,11 @@ class Phantomjs
     Phantomjs.new.run(path, *args, &block)
   end
 
-  def run(path, *args)
+  def run(opts, path, *args)
     epath = File.expand_path(path)
     raise NoSuchPathError.new(epath) unless File.exist?(epath)
     block = block_given? ? Proc.new : nil
+    epath = "#{opts.join(' ')} #{epath}"
     execute(epath, args, block)
   end
 
